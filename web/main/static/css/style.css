@@ -1,0 +1,35 @@
+#app-header {
+    background-color: #ff6600;
+}
+
+.app-logo {
+    padding-left: .5em !important;
+}
+
+.app-content {
+    background-color: #f6f6ef;
+    padding: 1em;
+}
+
+.post {
+
+}
+.post-title {
+    color: #444 !important;
+}
+
+.post-upvote-button {
+    position: relative;
+    top: .2em;
+    cursor: pointer;
+}
+.post-upvote-button.voted {
+    color: #ff6600;
+}
+.post footer {
+    font-size: .8em;
+    color: #828282;
+}
+.post footer a {
+    color: #828282;
+}

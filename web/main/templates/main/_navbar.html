@@ -1,0 +1,15 @@
+<nav id="app-header">
+    <div class="nav-wrapper">
+        <a href="{% url 'home' %}" class="brand-logo app-logo">Hackernews Clone</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li><a href="sass.html">New</a></li>
+            <li><a href="badges.html">Comments</a></li>
+            <li><a href="{% url 'topics_create' %}">Submit</a></li>
+            {% if user.is_anonymous %}
+            <li><a href="{% url 'users:login' %}">Login</a></li>
+            {% else %}
+            <li><a href="{% url 'users:logout' %}">Logout</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>

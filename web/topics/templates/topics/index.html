@@ -1,0 +1,46 @@
+{% extends 'main/main.html' %}
+{% load filter_call_with %}
+
+{% block main_content %}
+    {{ block.super }}
+
+    <p>Please read the <a href="">rules</a>. You can also browse the <a href="">newest</a> Show HNs.</p>
+    {% for topic in last_topics %}
+        {% call_with topic method='is_voted_by_user' user_id=request.user.id as is_voted_by_user %}
+
+        <article class="post">
+            <header>
+                {{ forloop.counter }}.
+                <i data-action="up-vote" data-id="{{ topic.id }}"
+                   class="fas fa-sort-up post-upvote-button {{ is_voted_by_user|yesno:'voted,' }}"></i>
+
+                <a href="{{ topic.get_topic_url }}" class="post-title">
+                    {{ topic.title }}
+                    {% if topic.is_link %}
+                        ({{ topic.url }})
+                    {% endif %}
+                </a>
+            </header>
+            <footer>
+                {{ topic.point_count }} points by
+                <a href="">{{ topic.publisher.username }}</a>
+                |
+                <a href="{{ topic.get_absolute_url }}">{{ topic.comment_count }} comments</a>
+            </footer>
+        </article>
+        <hr>
+    {% endfor %}
+
+    <div class="pagination">
+    <span class="step-links">
+        {% if last_topics.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ last_topics.previous_page_number }}">previous</a>
+        {% endif %}
+        {% if last_topics.has_next %}
+            <a href="?page={{ last_topics.next_page_number }}">next</a>
+            <a href="?page={{ last_topics.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+    </div>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css"
+          media="screen,projection">
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css"
+          integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+    {% csrf_token %}
+</head>
+
+<body>
+
+<div class="container">
+    {% include 'main/_navbar.html' %}
+    <div class="app-content">
+        {% block main_content %}
+        {% endblock %}
+    </div>
+</div>
+
+<!--JavaScript at end of body for optimized loading-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+<script>
+    $(function () {
+        var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        });
+
+        console.log(csrftoken);
+        $('[data-action="up-vote"]').click(function () {
+            var url = '{% url "topics_upvote" id='00001230000' %}';
+            var post_id = $(this).data('id');
+            url = url.replace('00001230000', post_id);
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                dataType: 'json',
+                success: function (response) {
+                    if (response.key == 'vote_added') {
+                        $("[data-id='" + post_id + "']").addClass('voted');
+                    }
+
+                    if (response.key == 'vote_removed') {
+                        $("[data-id='" + post_id + "']").removeClass('voted');
+                    }
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

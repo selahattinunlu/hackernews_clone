@@ -1,0 +1,12 @@
+{% extends 'main/main.html' %}
+
+{% block main_content %}
+    <article>
+        <h4>{{ topic.title }}</h4>
+        {% if topic.is_link %}
+        <small>({{ topic.url }})</small>
+        {% endif %}
+
+        {{ topic.body }}
+    </article>
+{% endblock %}
