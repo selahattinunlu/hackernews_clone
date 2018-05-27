@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
-from django.views.generic import CreateView, DetailView
+from django.views.generic import CreateView, DetailView, View
 from django.urls import reverse_lazy
 from . import forms
 from django.contrib.auth.decorators import login_required
@@ -72,10 +72,36 @@ class TopicDetailView(DetailView):
     template_name = 'topics/detail.html'
 
     def get(self, request, slug):
+        comment_form = forms.CommentCreateForm()
         topic = Topic.objects.filter(slug=slug).first()
+        comments = topic.comments.order_by('-id').all()
 
         if not topic:
             return redirect('home')
 
-        ctx = {'topic': topic}
+        ctx = {'topic': topic, 'comments': comments, 'comment_form': comment_form}
         return render(request, self.template_name, ctx)
+
+
+class CommentView(View):
+    def delete(self, request, comment_id):
+        pass
+
+
+class CommentCreateView(CreateView):
+    form_class = forms.CommentCreateForm
+
+    def get(self, request, id):
+        topic = Topic.objects.get(pk=id)
+        return redirect('topics_detail', slug=topic.slug)
+
+    def form_valid(self, form):
+        if not self.request.user:
+            return redirect('home')
+
+        topic = Topic.objects.get(pk=form.data['topic_id'])
+        comment = form.save(commit=False)
+        comment.topic = topic
+        comment.user = self.request.user
+        comment.save()
+        return redirect('topics_detail', slug=topic.slug)
